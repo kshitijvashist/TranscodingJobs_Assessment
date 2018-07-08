@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+
+<style>
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+.button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: black;
+  background-color: gray;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+</style>
+<script>
+     
+      window.addEventListener("load", function() {           
+        var request = new XMLHttpRequest();
+        request.addEventListener("load", function() {
+          var parser = new DOMParser(); 
+          var xml = parser.parseFromString( this.response, "text/xml" )
+          var nodes = xml.documentElement.childNodes;
+          
+          var table="<table><tr><th>List Of Components</th></tr>";
+          var x = xml.getElementsByTagName("robotAllPartsDTO");
+          for (i = 0; i <x.length; i++) { 
+        	  
+            table += "<tr><td id=listOfomp>" +
+            x[i].getElementsByTagName("listOfALLComponents")[0].childNodes[0].nodeValue +
+            "</td><td></tr>";
+          }
+          "</table>";
+          document.getElementById("demo").innerHTML = table;
+                     
+        });
+        request.open("GET", "http://localhost:8080/RobotPartInventory/rest/allParts");
+        request.send();
+      })
+      
+      
+    </script>
+    <script>
+    function myParts() {
+	/*  var x=val.cells;
+	alert("hii"+x)
+	alert("hii="+val)
+	document.getElementById('editButton').value=val.innerHTML;
+	console.log(document.getElementById('editButton').value); */
+	window.open("home.html");
+}
+</script>
+</head>
+<body>
+<p id="demo"></p>
+ <input type="button" id="allParts" value="Back To Main Page" class=button onClick="myParts();">
+ 
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>    
+<header ><img src='../images/header.JPG' style="width:1335px;"></header>
+  <head>
+  <link rel="stylesheet" type="text/css" href="../css/robot.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        function deteteMethod() {
+        	
+        	var getSerial=document.getElementById('serialNo').innerText;
+        	
+                $.ajax({
+                    url: 'http://localhost:8080/RobotPartInventory/rest/assemble/'+getSerial,    //Your api url
+                    type: 'DELETE',   //type is any HTTP method
+                      	
+                    success: function () {
+                    	alert("Record Deleted Successfully");
+                    	location.reload();
+                    }
+                })
+                ;
+
+        }
+    </script>
+    
+     <script type="text/javascript">
+        $(document).ready(function() {
+            $('#submit').click(  function () {
+            	
+                console.log("click");
+                var serialNumber = $('#serialNumber').val();
+                var name = $('#name').val();
+                var manufacturer = $('#manufacturer').val();
+                var weight = $('#weight').val();
+                var components = $('#components').val();
+                
+                
+
+                $.ajax({
+                    url: 'http://localhost:8080/RobotPartInventory/rest/assemble',    //Your api url
+                    type: 'POST',   //type is any HTTP method
+                    data: "<robotInventory><serialNumber>"+serialNumber+"</serialNumber><name>"+name+"</name><manufacturer>"+manufacturer+"</manufacturer><weight>"+weight+"</weight><listOfComponents>"+components+"</listOfComponents></robotInventory>",  
+                    contentType: "application/xml",
+                    
+                    success: function () {
+                    	document.getElementById('myModal').style.display = "none";
+                    	location.reload();
+                    }
+                })
+                ;
+
+            });
+        });
+    </script>
+       <script type="text/javascript">
+        $(document).ready(function() {
+            $('#submit1').click(  function () {
+            	
+                console.log("click");
+                var serialNumber = $('#serialNumber1').val();
+                var name = $('#name1').val();
+                var manufacturer = $('#manufacturer1').val();
+                var weight = $('#weight1').val();
+                var components = $('#components1').val();
+                
+                
+
+                $.ajax({
+                    url: 'http://localhost:8080/RobotPartInventory/rest/assemble',    //Your api url
+                    type: 'PUT',   //type is any HTTP method
+                    data: "<robotInventory><serialNumber>"+serialNumber+"</serialNumber><name>"+name+"</name><manufacturer>"+manufacturer+"</manufacturer><weight>"+weight+"</weight><listOfComponents>"+components+"</listOfComponents></robotInventory>",  
+                    contentType: "application/xml",
+                    
+                    success: function () {
+                    	document.getElementById('myModal1').style.display = "none";
+                    	location.reload();
+                    }
+                })
+                ;
+
+            });
+        });
+    </script>
+    <script>
+      function iterateNodes(nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+        	console.log(nodes)
+        	document.getElementById("demo1").innerHTML =nodes.getElementsByTagName("manufacturer")[0].childNodes[0].nodeValue;
+          if (nodes[i].nodeType === 4) {
+            document.body.innerHTML += nodes[i].textContent + "<br>"
+          };
+            if (nodes[i].childNodes.length) {
+              iterateNodes(nodes[i].childNodes)
+            }
+          }
+      }
+      window.addEventListener("load", function() {           
+        var request = new XMLHttpRequest();
+        request.addEventListener("load", function() {
+          var parser = new DOMParser(); 
+          var xml = parser.parseFromString( this.response, "text/xml" )
+          var nodes = xml.documentElement.childNodes;
+          
+          var table="<table><tr><th>Serial Number</th><th>Name</th><th>Manufacturer</th><th>Weight</th><th>Components</th>"+
+        	  "<th>Edit</th><th>Delete</th></tr>";
+          var x = xml.getElementsByTagName("robotInventory");
+          for (i = 0; i <x.length; i++) { 
+        	  
+            table += "<tr><td id=serialNo>" +
+            x[i].getElementsByTagName("serialNumber")[0].childNodes[0].nodeValue +
+            "</td><td>" +
+            x[i].getElementsByTagName("name")[0].childNodes[0].nodeValue +
+            "</td><td>" +
+            x[i].getElementsByTagName("manufacturer")[0].childNodes[0].nodeValue +
+            "</td><td>" +
+            x[i].getElementsByTagName("weight")[0].childNodes[0].nodeValue +
+            "</td><td>" +
+            x[i].getElementsByTagName("listOfComponents")[0].childNodes[0].nodeValue +
+    		"</td><td>" +
+           
+            "<button id=editButton class=button type=button onClick=myClick()>Edit</button></td><td>" +
+           
+            
+            "<input id=deleteButton type=button class=button value=Delete onClick=deteteMethod()></input></td></tr>";
+          }
+          "</table>";
+          document.getElementById("demo").innerHTML = table;
+                     
+        });
+        request.open("GET", "http://localhost:8080/RobotPartInventory/rest/assemble");
+        request.send();
+      })
+      
+      
+    </script>
+    <script>
+    var modal = document.getElementById('myModal');
+    var modal1 = document.getElementById('myModal1');
+// Get the button that opens the modal
+var btn = document.getElementById("editButton");
+
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+function myParts() {
+	
+	window.open("index.html");
+}
+
+// When the user clicks the button, open the modal 
+ function myClick() {
+	
+    document.getElementById('myModal').style.display = "block";
+}
+ function myClickForEdit() {
+		
+	    document.getElementById('myModal1').style.display = "block";
+	}
+ function closeClickForEdit() {
+		
+	    document.getElementById('myModal1').style.display = "none";
+	}
+ function closeClick() {
+
+	    document.getElementById('myModal').style.display = "none";
+	}
+// When the user clicks on <span> (x), close the modal
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal1) {
+        modal1.style.display = "none";
+    }
+}
+</script>
+    
+  </head>    
+  <body>      
+  <p id="demo"></p>
+  <div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    
+   <table>
+  <tr>
+    <th>Serial Number</th>
+    <th>Name</th> 
+    <th>Manufacturer</th>
+    <th>Weight</th>
+    <th>Components</th>
+  </tr>
+  <tr>
+    <td><input id="serialNumber" type="text" ></td><td><input id="name" type="text" required></td><td><input id="manufacturer" type="text" ></td>
+    <td><input id="weight" type="text" ></td>
+    <td><input id="components" type="text" ></td>
+    <td><input id="submit" type="button" value="Save" ></td>
+    <td><input id="close" type="button" value="Close" onClick="closeClick()" ></td>
+  </tr>
+ 
+</table>
+  </div>
+
+</div>
+
+<div id="myModal1" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    
+   <table>
+  <tr>
+    <th>Serial Number</th>
+    <th>Name</th> 
+    <th>Manufacturer</th>
+    <th>Weight</th>
+    <th>Components</th>
+  </tr>
+  <tr>
+    <td><input id="serialNumber1" type="text" ></td><td><input id="name1" type="text" required></td><td><input id="manufacturer1" type="text" ></td>
+    <td><input id="weight1" type="text" ></td>
+    <td><input id="components1" type="text" ></td>
+    <td><input id="submit1" type="button" value="Save" ></td>
+    <td><input id="close1" type="button" value="Close" onClick="closeClickForEdit()" ></td>
+  </tr>
+ 
+</table>
+  </div>
+
+</div>
+
+  <input type="button" id="create" value="Add Robots" class=button onClick="myClick();">
+  <input type="button" id="allParts" value="Show All Parts" class=button onClick="myParts();">
+  </body>    
+</html>
